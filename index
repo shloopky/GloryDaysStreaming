@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroStream - Frutiger Aero Video</title>
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.4);
+            --border-glass: rgba(255, 255, 255, 0.8);
+            --aero-blue: #0099ff;
+            --aero-green: #4ade80;
+            --glossy-grad: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 100%);
+        }
+
+        body {
+            background: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=2000') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #003366;
+            overflow-x: hidden;
+        }
+
+        /* Frutiger Aero Glass Panels */
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.3), inset 0 0 15px rgba(255,255,255,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glossy Overlay for that 2000s look */
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+        }
+
+        /* Navigation Bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 10px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-style: italic;
+        }
+
+        /* Main Content Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        /* Video Player Area */
+        .video-main {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Chat System */
+        .chat-container {
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 15px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.2);
+        }
+
+        #chat-area {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .chat-msg {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Buttons & Inputs */
+        .aero-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid #1e5799;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #7abcff 0%, #60abf8 44%, #4096ee 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 6px rgba(0,0,0,0.1);
+            text-shadow: 0px 1px 2px rgba(0,0,0,0.4);
+            transition: all 0.2s;
+        }
+
+        .aero-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .aero-input {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid #999;
+            padding: 10px;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        /* Modal / Window Animation */
+        .modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 30px;
+            z-index: 100;
+            display: none;
+        }
+
+        /* Fishtank-style live indicators */
+        .live-tag {
+            background: #ff0055;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="glass-panel">
+    <div class="logo">AeroStream 🫧</div>
+    <div>
+        <button class="aero-btn" onclick="toggleModal('login-modal')">Login / Join</button>
+    </div>
+</nav>
+
+<div class="container">
+    <main>
+        <div class="video-main glass-panel" id="player">
+            <span class="live-tag" style="position: absolute; top: 20px; left: 20px;">LIVE - FISHTANK MODE</span>
+            <div style="text-align: center;">
+                <p>🌀 Stream Loading...</p>
+                <small>Connecting to Fish-Cam 01</small>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="margin-top: 20px; padding: 20px;">
+            <h1 id="video-title">Welcome to the Aero-Sphere</h1>
+            <p>Posted by <strong id="username-display">AeroAdmin</strong> • 1.2k watching</p>
+            <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+            <div id="comment-section">
+                <h3>Comments</h3>
+                <div class="chat-msg"><strong>User99:</strong> This UI takes me back to 2008! Love the bubbles.</div>
+            </div>
+        </div>
+    </main>
+
+    <aside class="chat-container glass-panel">
+        <div class="chat-header">Live Discussion</div>
+        <div id="chat-area">
+            <div class="chat-msg"><strong>System:</strong> Welcome to the live chat!</div>
+        </div>
+        <div style="padding: 15px; background: rgba(255,255,255,0.2);">
+            <input type="text" id="chat-input" class="aero-input" style="width: 70%;" placeholder="Say something...">
+            <button class="aero-btn" onclick="sendChat()" style="padding: 8px 15px;">Send</button>
+        </div>
+    </aside>
+</div>
+
+<div id="login-modal" class="modal glass-panel">
+    <h2>Join AeroStream</h2>
+    <p>Create an account to comment and go live.</p>
+    <input type="text" id="user-input" class="aero-input" style="width: 90%; margin-bottom: 10px;" placeholder="Username"><br>
+    <button class="aero-btn" onclick="login()">Enter the Bubble</button>
+    <button class="aero-btn" style="background: #999;" onclick="toggleModal('login-modal')">Cancel</button>
+</div>
+
+<script>
+    // Sound effects (Simulated using functional triggers)
+    const popSound = new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3');
+
+    let currentUser = "Guest";
+
+    function toggleModal(id) {
+        popSound.play();
+        const modal = document.getElementById(id);
+        modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function login() {
+        const val = document.getElementById('user-input').value;
+        if (val) {
+            currentUser = val;
+            document.getElementById('username-display').innerText = currentUser;
+            toggleModal('login-modal');
+            addChatMessage("System", `Welcome, ${currentUser}! You are now logged in.`);
+        }
+    }
+
+    function sendChat() {
+        const input = document.getElementById('chat-input');
+        if (input.value.trim() !== "") {
+            addChatMessage(currentUser, input.value);
+            input.value = "";
+            popSound.play();
+        }
+    }
+
+    function addChatMessage(user, msg) {
+        const area = document.getElementById('chat-area');
+        const div = document.createElement('div');
+        div.className = 'chat-msg';
+        div.innerHTML = `<strong>${user}:</strong> ${msg}`;
+        area.appendChild(div);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    // Simulate "Live" activity like Fishtank
+    setInterval(() => {
+        const bots = ["AquaLover", "VistaFan", "FrutigerGuy", "ShinyButton"];
+        const msgs = ["Look at that reflection!", "So smooth...", "Is this 720p?", "🫧🫧🫧", "Aero is peak design."];
+        if (Math.random() > 0.7) {
+            addChatMessage(bots[Math.floor(Math.random()*bots.length)], msgs[Math.floor(Math.random()*msgs.length)]);
+        }
+    }, 4000);
+
+    // Enter key support for chat
+    document.getElementById('chat-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') sendChat();
+    });
+</script>
+
+</body>
+</html>
