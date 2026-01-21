@@ -1,3 +1,22 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  'https://vyturuwuksqefrwtuuek.supabase.co',
+  'sb_publishable_oMa_vEbEX5ErVtrVxZRpFQ_ykdn7z3Q'
+)
+
+// Example: Save a thread
+const createThread = async (boardId, title, content) => {
+  const { data, error } = await supabase
+    .from('threads')
+    .insert([
+      { board_id: boardId, title, content, user_id: currentUser.id }
+    ])
+  
+  if (error) console.error(error)
+  return data
+}
+
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Plus, Search, TrendingUp, Users, Clock, Eye, ThumbsUp, MessageSquare, Filter, X, ChevronDown, ChevronUp, Flag, Share2, Bookmark, Hash, Bell, User, Settings, LogOut, Menu } from 'lucide-react';
 
